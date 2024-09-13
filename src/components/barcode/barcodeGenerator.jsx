@@ -29,7 +29,7 @@ const BarcodeGenerator = () => {
     }, [inputValue]);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-2">
             {/* Card 1: Input Field */}
             <div>
                 <div className="bg-white shadow-md rounded p-6">
@@ -46,8 +46,8 @@ const BarcodeGenerator = () => {
 
             {/* Card 2: Barcode */}
             {inputValue && (
-                <div className="bg-white shadow-md rounded p-6">
-                    <div className="p-2 w-full">
+                <div className="bg-white shadow-md rounded md:p-6 px-1">
+                    <div className="md:p-2 w-full">
                         <div
                             ref={barcodeRef}
                             style={{
