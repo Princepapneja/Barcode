@@ -1,36 +1,70 @@
-import React from 'react'
-import Card from '../utils/card'
-import InputField from '../utils/InputFields'
-import Button from '../utils/button'
-import Barcode from 'react-barcode'
+import React, { useState, useEffect, useRef } from 'react';
+import Barcode from 'react-barcode';
 
 const BarcodeGenerator = () => {
-    const [barcode, setBarcode] = React.useState('')
-    const [barcodeType, setBarcodeType] = React.useState('')
+    const [inputValue, setInputValue] = useState('');
+    const [barcodeScale, setBarcodeScale] = useState(1);
+    const barcodeRef = useRef(null);
 
-    const handleBarcodeChange = (e) => {
-        setBarcode(e.target.value)
-    }
+    const handleInputChange = (event) => {
+        setInputValue(event.target.value);
+    };
 
+    useEffect(() => {
+        const adjustBarcodeScale = () => {
+            if (barcodeRef.current) {
+                const containerWidth = barcodeRef.current.parentElement.offsetWidth;
+                const barcodeWidth = barcodeRef.current.offsetWidth;
+                const scale = containerWidth / barcodeWidth;
+                setBarcodeScale(scale < 1 ? scale : 1);
+            }
+        };
+
+        adjustBarcodeScale();
+        window.addEventListener('resize', adjustBarcodeScale);
+
+        return () => {
+            window.removeEventListener('resize', adjustBarcodeScale);
+        };
+    }, [inputValue]);
 
     return (
-        <section className="p-10 md:p-20 ">
-            <div className='container'>
-                <Card title="generate barcode">
-                    <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
-                        <InputField className={"w-[70%] flex-shrink-0"} value={barcode} handleInputChange={handleBarcodeChange}
-                            placeholder="type your string ..."
-                        />
-                        {
-                            barcode &&
-                            <Barcode value={barcode} options={{ width: 0.5, height: 40, format: 'CODE128', displayValue: false }}
-                            />
-                        }
-                    </div>
-                </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+            {/* Card 1: Input Field */}
+            <div>
+                <div className="bg-white shadow-md rounded p-6">
+                    <h1 className="text-2xl font-bold mb-6">Barcode Generator</h1>
+                    <input
+                        type="text"
+                        placeholder="Enter text to generate barcode"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        className="border border-gray-400 p-2 rounded mb-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
             </div>
-        </section>
-    )
-}
 
-export default BarcodeGenerator
+            {/* Card 2: Barcode */}
+            {inputValue && (
+                <div className="bg-white shadow-md rounded p-6">
+                    <div className="p-2 w-full">
+                        <div
+                            ref={barcodeRef}
+                            style={{
+                                transform: `scale(${barcodeScale})`,
+                                transformOrigin: 'center',
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <Barcode value={inputValue} />
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default BarcodeGenerator;
