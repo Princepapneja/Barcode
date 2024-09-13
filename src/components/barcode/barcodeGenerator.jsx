@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Barcode from 'react-barcode';
 
 const BarcodeGenerator = () => {
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState('SPACE-MOTOEDGE50F5G-PURPLE');
     const [barcodeScale, setBarcodeScale] = useState(1);
     const barcodeRef = useRef(null);
 
